@@ -2,43 +2,43 @@ package com.github.woochanlee.basecalendar
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.ViewPager
+import com.github.woochanlee.basecalendar.CalendarUtil.Companion.cacheData
+import com.github.woochanlee.basecalendar.CalendarUtil.Companion.getCurrentDatePosition
 import kotlinx.android.synthetic.main.activity_main.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var scheduleRecyclerViewAdapter: RecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initView()
+        initViewPager()
     }
 
-    fun initView() {
+    private fun initViewPager() {
+        val position = getCurrentDatePosition()
 
-        scheduleRecyclerViewAdapter = RecyclerViewAdapter(this)
+        vp_calendar.adapter = SlideCalendar(supportFragmentManager)
+        vp_calendar.currentItem = position
 
-        rv_schedule.layoutManager = GridLayoutManager(this, BaseCalendar.DAYS_OF_WEEK)
-        rv_schedule.adapter = scheduleRecyclerViewAdapter
-        rv_schedule.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
-        rv_schedule.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        setDate()
 
-        tv_prev_month.setOnClickListener {
-            scheduleRecyclerViewAdapter.changeToPrevMonth()
-        }
-
-        tv_next_month.setOnClickListener {
-            scheduleRecyclerViewAdapter.changeToNextMonth()
-        }
+        vp_calendar.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) { setDate() }
+        })
     }
 
-    fun refreshCurrentMonth(calendar: Calendar) {
-        val sdf = SimpleDateFormat("yyyy MM", Locale.KOREAN)
-        tv_current_month.text = sdf.format(calendar.time)
+    private fun setDate() {
+        val date = cacheData[vp_calendar.currentItem]
+
+        if (date != null) {
+            tv_current_month.text = String.format("%d %d", date.first, date.second)
+        } else {
+            println("error")
+        }
     }
 }

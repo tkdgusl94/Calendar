@@ -4,16 +4,11 @@ import java.util.*
 
 
 /**
- * Created by WoochanLee on 25/03/2019.
+ * BaseCalendar
  */
 class BaseCalendar {
 
-    companion object {
-        const val DAYS_OF_WEEK = 7
-        const val LOW_OF_CALENDAR = 6
-    }
-
-    val calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance()
 
     var prevMonthTailOffset = 0
     var nextMonthHeadOffset = 0
@@ -25,47 +20,23 @@ class BaseCalendar {
         calendar.time = Date()
     }
 
-    /**
-     * Init calendar.
-     */
-    fun initBaseCalendar(refreshCallback: (Calendar) -> Unit) {
-        makeMonthDate(refreshCallback)
-    }
+    fun changeTo(year: Int, month: Int) {
+        val currentDate = CalendarUtil.currentDate
 
-    /**
-     * Change to prev month.
-     */
-    fun changeToPrevMonth(refreshCallback: (Calendar) -> Unit) {
-        if(calendar.get(Calendar.MONTH) == 0){
-            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1)
-            calendar.set(Calendar.MONTH, Calendar.DECEMBER)
-        }else {
-            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
-        }
-        makeMonthDate(refreshCallback)
-    }
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month - 1)
 
-    /**
-     * Change to next month.
-     */
-    fun changeToNextMonth(refreshCallback: (Calendar) -> Unit) {
-        if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER){
-            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
-            calendar.set(Calendar.MONTH, 0)
-        }else {
-            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1)
-        }
-        makeMonthDate(refreshCallback)
+        val date = if (currentDate.get(Calendar.YEAR) == year && currentDate.get(Calendar.MONTH) == month - 1) currentDate.get(Calendar.DATE) else 1
+        calendar.set(Calendar.DATE, date)
+
+        makeMonthDate()
     }
 
     /**
      * make month date.
      */
-    private fun makeMonthDate(refreshCallback: (Calendar) -> Unit) {
-
+    private fun makeMonthDate() {
         data.clear()
-
-        calendar.set(Calendar.DATE, 1)
 
         currentMonthMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
@@ -76,8 +47,6 @@ class BaseCalendar {
 
         nextMonthHeadOffset = LOW_OF_CALENDAR * DAYS_OF_WEEK - (prevMonthTailOffset + currentMonthMaxDate)
         makeNextMonthHead()
-
-        refreshCallback(calendar)
     }
 
     /**
@@ -105,5 +74,10 @@ class BaseCalendar {
         var date = 1
 
         for (i in 1..nextMonthHeadOffset) data.add(date++)
+    }
+
+    companion object {
+        const val DAYS_OF_WEEK = 7
+        const val LOW_OF_CALENDAR = 6
     }
 }
