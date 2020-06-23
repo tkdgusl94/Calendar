@@ -51,10 +51,10 @@ class RecyclerViewAdapter(year: Int, month: Int) : RecyclerView.Adapter<Recycler
         }
 
         /* 현재 날짜 찍기 */
-        if (isCurrentDate(baseCalendar.data[position])) holder.itemView.cl_background.visibility = View.VISIBLE
+        if (isCurrentDate(baseCalendar.data[position])) holder.cl_background.visibility = View.VISIBLE
 
         /* TODO : 클릭 리스너 */
-        holder.itemView.setOnClickListener {
+        holder.containerView.setOnClickListener {
             println("${baseCalendar.data[position]}")
         }
 

@@ -21,27 +21,32 @@ class BaseCalendar {
     }
 
     fun changeTo(year: Int, month: Int) {
-        val currentDate = CalendarUtil.currentDate
-
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1)
 
-        val date = if (currentDate.get(Calendar.YEAR) == year && currentDate.get(Calendar.MONTH) == month - 1) currentDate.get(Calendar.DATE) else 1
-        calendar.set(Calendar.DATE, date)
+        calendar.set(Calendar.DATE, 1)
 
-        makeMonthDate()
+        makeMonthDate(0)
     }
 
     /**
      * make month date.
      */
-    private fun makeMonthDate() {
+    private fun makeMonthDate(day: Int) {
         data.clear()
 
         currentMonthMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        prevMonthTailOffset = calendar.get(Calendar.DAY_OF_WEEK) - 1
-
+        /* 토, 일, 월 중에 뭐부터 시작할건지 판단 */
+        prevMonthTailOffset = when(day) {
+            // 일요일
+            0 -> calendar.get(Calendar.DAY_OF_WEEK) - 1
+            // 월요일
+            1 -> calendar.get(Calendar.DAY_OF_WEEK) - 2
+            // 토요일
+            2 -> calendar.get(Calendar.DAY_OF_WEEK)
+            else -> 1
+        }
         makePrevMonthTail(calendar.clone() as Calendar)
         makeCurrentMonth(calendar)
 
