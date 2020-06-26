@@ -59,7 +59,7 @@ class BaseCalendar {
      */
     private fun makePrevMonthTail(calendar: Calendar) {
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
-        val maxDate = calendar.getActualMaximum(Calendar.DATE)
+        val maxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         var maxOffsetDate = maxDate - prevMonthTailOffset
 
         for (i in 1..prevMonthTailOffset) data.add(++maxOffsetDate)

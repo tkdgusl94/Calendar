@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /* 위에 날짜 바꿔주기 */
     private fun setDate() {
         val date = cacheData[vp_calendar.currentItem]
 

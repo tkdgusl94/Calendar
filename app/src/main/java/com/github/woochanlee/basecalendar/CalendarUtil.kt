@@ -4,7 +4,7 @@ import java.util.*
 
 class CalendarUtil {
     companion object {
-        const val START_YEAR = 1970
+        private const val START_YEAR = 1970
 
         val cacheData = mutableMapOf<Int, Pair<Int, Int>>()
 
